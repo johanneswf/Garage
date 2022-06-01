@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Garage": {
+      "commandName": "Project",
+      "commandLineArgs": "ui=console"
+    }
+  }
+}
