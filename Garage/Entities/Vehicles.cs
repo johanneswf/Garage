@@ -1,6 +1,6 @@
 ﻿namespace Garage.Entities
 {
-    internal class Vehicle
+    internal abstract class Vehicle
     {
         public int WheelCount { get; set; }
         public string Color { get; set; }
