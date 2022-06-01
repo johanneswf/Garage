@@ -11,10 +11,10 @@
 
         public void Run()
         {
-            SeedGarage();
             do
             {
                 Menu();
+                SeedGarage();
                 _ui.Read();
             } while (true);
         }
@@ -26,11 +26,21 @@
 
         private void SeedGarage()
         {
-            Garage<Vehicle> garage = new(10);
+            Garage<IVehicle> garage = new(10);
             garage.Add(new Boat(0, "white", "båtbåten", false));
+            garage.Add(new Airplane(3, "white", "flygflyget", 1));
+            garage.Add(new Motorcycle(2, "white", "mcmcen", 998));
+            garage.Add(new Car(4, "white", "bilbilen", 12));
+
             foreach (var vehicle in garage)
             {
-                _ui.Print(vehicle.GetType().Name);
+                var result =    
+                    $"\nType: {vehicle.GetType().Name}" +
+                    $"\nColor: {vehicle.Color}" +
+                    $"\nRegPlate: {vehicle.RegPlate}";
+                if (vehicle.WheelCount > 0) result += 
+                    $"\nWheels: {vehicle.WheelCount}";
+                _ui.Print(result);
             }
         }
     }

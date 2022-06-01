@@ -1,6 +1,6 @@
 ﻿namespace Garage.Entities
 {
-    internal class Garage<T> : IEnumerable<T>
+    internal class Garage<T> : IGarage<T>
     {
         private readonly T[] _garage;
         private readonly int _size;
