@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Garage
+﻿namespace Garage
 {
     internal class Main
     {
-        private IUI ui;
+        private readonly IUI _ui;
 
         public Main(IUI ui)
         {
-            this.ui = ui; 
+            _ui = ui; 
         }
 
         public void Run()
@@ -21,13 +15,13 @@ namespace Garage
             do
             {
                 Menu();
-                ui.Read();
+                _ui.Read();
             } while (true);
         }
 
         private void Menu()
         {
-            ui.Print("Menu");
+            _ui.Print("Menu");
         }
 
         private void SeedGarage()
@@ -36,7 +30,7 @@ namespace Garage
             garage.Add(new Boat(0, "white", "båtbåten", false));
             foreach (var vehicle in garage)
             {
-                ui.Print(vehicle.GetType().Name.ToString());
+                _ui.Print(vehicle.GetType().Name);
             }
         }
     }

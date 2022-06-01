@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Garage.Entities
+﻿namespace Garage.Entities
 {
     internal class Garage<T> : IEnumerable<T>
     {
