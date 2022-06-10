@@ -13,14 +13,18 @@
 
         public bool Add(T item)
         {
+            // We iterate over our garage array
             for (int i = 0; i < _size; i++)
             {
+                // We add our item to the first null element in our array
                 if (_garage[i] is null)
                 {
                     _garage[i] = item;
                     return true;
                 }
             }
+            // If there are no null elements in our array, it's full.
+            // We'll handle the bool in our GarageHandler class.
             return false;
         }
 

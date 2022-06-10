@@ -2,7 +2,7 @@
 {
     internal class Main
     {
-        private readonly IUI _ui;
+        IUI _ui;
 
         public Main(IUI ui)
         {
@@ -11,37 +11,48 @@
 
         public void Run()
         {
+            int garageSize = 5; // While testing
+            while (garageSize <= 0)
+            {
+                int.TryParse(_ui.ReadLine(), out garageSize);
+            }
+
+            var garage = new Garage<IVehicle>(garageSize);
+
+            var handler = new GarageHandler(garage);
+
+            SeedGarage(handler); // While testing
+
             do
             {
-                Menu();
-                SeedGarage();
-                _ui.Read();
+                MainMenu();
+                switch (_ui.ReadLine())
+                {
+                    case "1":
+                        foreach (var vehicle in handler.ListVehicles())
+                        {
+
+                        }
+                        break;
+                    case "2":
+                        break;
+                }
             } while (true);
         }
 
-        private void Menu()
+        private void MainMenu()
         {
-            _ui.Print("Menu");
+            _ui.WriteLine("Menu" +
+                "\n1. List All Vehicles in Garage" +
+                "\n2. Add Vehicle to Garage");
         }
 
-        private void SeedGarage()
+        private void SeedGarage(GarageHandler handler)
         {
-            Garage<IVehicle> garage = new(10);
-            garage.Add(new Boat(0, "white", "båtbåten", false));
-            garage.Add(new Airplane(3, "white", "flygflyget", 1));
-            garage.Add(new Motorcycle(2, "white", "mcmcen", 998));
-            garage.Add(new Car(4, "white", "bilbilen", 12));
-
-            foreach (var vehicle in garage)
-            {
-                var result =    
-                    $"\nType: {vehicle.GetType().Name}" +
-                    $"\nColor: {vehicle.Color}" +
-                    $"\nRegPlate: {vehicle.RegPlate}";
-                if (vehicle.WheelCount > 0) result += 
-                    $"\nWheels: {vehicle.WheelCount}";
-                _ui.Print(result);
-            }
+            handler.Add(new Boat(0, "white", "båtbåten", false));
+            handler.Add(new Airplane(3, "white", "flygflyget", 1));
+            handler.Add(new Motorcycle(2, "white", "mcmcen", 998));
+            handler.Add(new Car(4, "white", "bilbilen", 12));
         }
     }
 }

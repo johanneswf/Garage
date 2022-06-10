@@ -2,7 +2,8 @@
 {
     internal interface IUI
     {
-        void Print(string m);
-        string Read();
+        void Write(string m);
+        void WriteLine(string m);
+        string ReadLine();
     }
 }

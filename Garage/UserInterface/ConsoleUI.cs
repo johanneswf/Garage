@@ -2,8 +2,8 @@
 {
     internal class ConsoleUI : IUI
     {
-        public void Print(string m) => Console.WriteLine(m);
-
-        public string Read() => Console.ReadLine()!;
+        public void Write(string m) => Console.Write(m);
+        public void WriteLine(string m) => Console.WriteLine(m);
+        public string ReadLine() => Console.ReadLine()!;
     }
 }
