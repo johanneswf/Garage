@@ -24,23 +24,13 @@
         }
     }
 
-    internal class Motorcycle : Vehicle
+    internal class Boat : Vehicle
     {
-        public int CylinderVolume { get; set; }
+        public bool IsSubmarine { get; set; }
 
-        public Motorcycle(int wheelCount, string color, string regPlate, int cylinderVolume) : base(wheelCount, color, regPlate)
+        public Boat(int wheelCount, string color, string regPlate, bool isSubmarine) : base(wheelCount, color, regPlate)
         {
-            CylinderVolume = cylinderVolume;
-        }
-    }
-
-    internal class Car : Vehicle
-    {
-        public int CylinderCount { get; set; }
-
-        public Car(int wheelCount, string color, string regPlate, int cylinderCount) : base(wheelCount, color, regPlate)
-        {
-            CylinderCount = cylinderCount;
+            IsSubmarine = isSubmarine;
         }
     }
 
@@ -54,13 +44,23 @@
         }
     }
 
-    internal class Boat : Vehicle
+    internal class Car : Vehicle
     {
-        public bool IsSubmarine { get; set; }
+        public int CylinderCount { get; set; }
 
-        public Boat(int wheelCount, string color, string regPlate, bool isSubmarine) : base(wheelCount, color, regPlate)
+        public Car(int wheelCount, string color, string regPlate, int cylinderCount) : base(wheelCount, color, regPlate)
         {
-            IsSubmarine = isSubmarine;
+            CylinderCount = cylinderCount;
+        }
+    }
+
+    internal class Motorcycle : Vehicle
+    {
+        public double CylinderVolume { get; set; }
+
+        public Motorcycle(int wheelCount, string color, string regPlate, double cylinderVolume) : base(wheelCount, color, regPlate)
+        {
+            CylinderVolume = cylinderVolume;
         }
     }
 }

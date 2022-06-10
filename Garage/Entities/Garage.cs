@@ -3,18 +3,18 @@
     internal class Garage<T> : IGarage<T>
     {
         private readonly T[] _garage;
-        private readonly int _size;
+        public readonly int Size;
 
         public Garage(int size)
         {
-            _size = size;
+            Size = size;
             _garage = new T[size];
         }
 
         public bool Add(T item)
         {
             // We iterate over our garage array
-            for (int i = 0; i < _size; i++)
+            for (int i = 0; i < Size; i++)
             {
                 // We add our item to the first null element in our array
                 if (_garage[i] is null)
@@ -30,7 +30,7 @@
 
         public IEnumerator<T> GetEnumerator()
         {
-            for (var i = 0; i < _size; i++)
+            for (var i = 0; i < Size; i++)
             {
                 if (_garage[i] is not null)
                 {
