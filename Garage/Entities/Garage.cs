@@ -1,8 +1,8 @@
 ﻿namespace Garage.Entities
 {
-    internal class Garage<T> : IEnumerable<T>
+    internal class Garage<T> : IEnumerable<T>  where T : IVehicle
     {
-        private readonly T[] _garage;
+        private T[] _garage;
         public readonly int Size;
 
         public Garage(int size)
@@ -37,5 +37,23 @@
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public bool Remove(T found)
+        {
+            //Validate
+            for (int i = 0; i < _garage.Length; i++)
+            {
+                if (_garage.Equals(found))
+                {
+                    _garage[i] = default!;
+                    return true;
+                }
+
+                //if ((IVehicle)_garage[i] == (IVehicle)found)
+                //    _garage[i] = default!;
+            }
+            return false;
+           
+        }
     }
 }

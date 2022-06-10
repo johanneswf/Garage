@@ -4,9 +4,9 @@
     {
         private readonly Garage<IVehicle> _garage;
 
-        public GarageHandler(Garage<IVehicle> garage)
+        public GarageHandler(int capacity)
         {
-            _garage = garage;
+            _garage = new Garage<IVehicle>(capacity);
         }
 
         public void Add(IVehicle item)
@@ -25,6 +25,21 @@
                 result.Add(vehicle);
             }
             return result;
+        }
+
+        internal IEnumerable<IVehicle> GetVehicles()
+        {
+           return _garage.ToList();
+        }
+
+        internal void UnPark(string input)
+        {
+            var found = _garage.FirstOrDefault(v => v.RegPlate == input);
+            if (found != null)
+            {
+                var ok = _garage.Remove(found);
+
+            }
         }
 
         //public List<string> ListVehicles()

@@ -3,6 +3,7 @@
     internal class Main
     {
         IUI ui;
+        private GarageHandler garageHandler;
 
         public Main(IUI ui)
         {
@@ -11,7 +12,7 @@
 
         public void Run()
         {
-            var garage = InitGarage();
+            InitGarage();
 
             bool run = true;
             do
@@ -26,13 +27,13 @@
                 switch (ui.ReadLine())
                 {
                     case "1":
-                        ListVehicles(garage);
+                        ListVehicles();
                         break;
                     case "2":
-                        ParkVehicle(garage);
+                        ParkVehicle();
                         break;
                     case "3":
-                        garage = TakeVehicle(garage);
+                        TakeVehicle();
                         break;
                     case "4":
                         FilterVehicles(garage);
@@ -44,12 +45,14 @@
             } while (run);
         }
 
-        private Garage<IVehicle> TakeVehicle(Garage<IVehicle> garage)
+        private void TakeVehicle()
         {
-            ListVehicles(garage);
+           
+            ListVehicles();
             ui.Write("Vehicle to remove (RegPlate): ");
             var input = ui.ReadLine().ToUpper();
-            var vehicleArray = garage.Where(x => x.RegPlate != input).ToArray();
+            garageHandler.UnPark(input);
+            //var vehicleArray = garage.Where(x => x.RegPlate != input).ToArray();
 
             // ToDo: Fix ugly solution
             if (vehicleArray.Count() < garage.Count())
@@ -69,15 +72,15 @@
 
         }
 
-        private void ListVehicles(Garage<IVehicle> garage)
+        private void ListVehicles()
         {
-            foreach (var vehicle in garage)
+            foreach (var vehicle in garageHandler.GetVehicles())
             {
                 ui.WriteLine($"{vehicle.RegPlate} {vehicle.GetType().Name}");
             }
         }
 
-        private Garage<IVehicle> InitGarage()
+        private void InitGarage()
         {
             int garageSize;
             ui.WriteLine("Create new garage");
@@ -98,7 +101,21 @@
                 string yn = ui.ReadLine().ToLower();
                 if (yn is "y")
                 {
-                    return new Garage<IVehicle>(garageSize)
+                    // garage new Garage<IVehicle>(garageSize)
+                    garageHandler = new GarageHandler(garageSize);
+                    GetSeed().ForEach(v => garageHandler.Add(v));
+                }
+                else if (yn is "n")
+                {
+                    garageHandler = new GarageHandler(garageSize);
+                  //  return new Garage<IVehicle>(garageSize);
+                }
+            } while (true);
+        }
+
+        private static List<IVehicle> GetSeed()
+        {
+            return new()
                     {
                         new Boat(0, "white", "BÅT1", false),
                         new Boat(0, "purple", "BÅT2", true),
@@ -110,20 +127,14 @@
                         new Motorcycle(2, "white", "MC1", 998),
                         new Motorcycle(3, "red", "MC2", 666),
                     };
-                }
-                else if (yn is "n")
-                {
-                    return new Garage<IVehicle>(garageSize);
-                }
-            } while (true);
         }
 
-        private void ParkVehicle(Garage<IVehicle> garage)
+        private void ParkVehicle()
         {
             if (garage.Size <= garage.Count()) ui.WriteLine("The garage is full.");
             else
             {
-                garage.Add(NewVehicle());
+                garageHandler.Add(NewVehicle());
                 ui.WriteLine("Your vehicle has been parked.");
             }
         }
@@ -179,7 +190,7 @@
                         double motorcycleCylinderVolume = MotorcycleCylinderVolume();
                         return new Motorcycle(wheelCount, color, regPlate, motorcycleCylinderVolume);
                     default:
-                        ui.WriteLine("The vehicle must be one of the types mentioned above.");
+                        ui.WriteLine("The vehicle must be one of the types mentioned.");
                         break;
                 }
             } while (true);
