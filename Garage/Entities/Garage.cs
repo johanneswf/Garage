@@ -1,6 +1,6 @@
 ﻿namespace Garage.Entities
 {
-    internal class Garage<T> : IGarage<T>
+    internal class Garage<T> : IEnumerable<T>
     {
         private readonly T[] _garage;
         public readonly int Size;
@@ -11,7 +11,7 @@
             _garage = new T[size];
         }
 
-        public bool Add(T item)
+        public void Add(T item)
         {
             // We iterate over our garage array
             for (int i = 0; i < Size; i++)
@@ -20,12 +20,9 @@
                 if (_garage[i] is null)
                 {
                     _garage[i] = item;
-                    return true;
+                    break;
                 }
             }
-            // If there are no null elements in our array, it's full.
-            // We'll handle the bool in our GarageHandler class.
-            return false;
         }
 
         public IEnumerator<T> GetEnumerator()
