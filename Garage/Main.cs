@@ -19,7 +19,7 @@
                 ui.WriteLine("Garage Main Menu" +
                     "\n1. List all vehicles parked in the garage" +
                     "\n2. Park vehicle in garage" +
-                    "\n3. Take vehicle from garage" + // Has regplate "search" functionality.
+                    "\n3. Take vehicle from garage" + // Has reg plate "search" functionality.
                     "\n4. Filter/search for vehicles in the garage" +
                     "\n5. Quit the application");
 

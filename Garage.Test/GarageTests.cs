@@ -1,6 +1,6 @@
 namespace Garage.Test
 {
-    public class UnitTest1
+    public class GarageTests
     {
         [Fact]
         public void Test1()
