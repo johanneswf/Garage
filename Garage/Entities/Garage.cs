@@ -1,14 +1,17 @@
 ﻿namespace Garage.Entities
 {
-    internal class Garage<T> : IEnumerable<T>  where T : IVehicle
+    internal class Garage<T> : IEnumerable<T>
+        where T : IVehicle
     {
-        private T[] _garage;
+        private T[] garage;
+
         public readonly int Size;
+        public int Count;
 
         public Garage(int size)
         {
             Size = size;
-            _garage = new T[size];
+            garage = new T[size];
         }
 
         public void Add(T item)
@@ -17,43 +20,40 @@
             for (int i = 0; i < Size; i++)
             {
                 // We add our item to the first null element in our array
-                if (_garage[i] is null)
+                if (garage[i] is null)
                 {
-                    _garage[i] = item;
+                    garage[i] = item;
+                    Count++;
                     break;
                 }
             }
+        }
+
+        public bool Remove(T found)
+        {
+            for (int i = 0; i < garage.Length; i++)
+            {
+                if (garage.Equals(found))
+                {
+                    garage[i] = default!;
+                    Count--;
+                    return true;
+                }
+            }
+            return false;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
             for (var i = 0; i < Size; i++)
             {
-                if (_garage[i] is not null)
+                if (garage[i] is not null)
                 {
-                    yield return _garage[i];
+                    yield return garage[i];
                 }
             }
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        public bool Remove(T found)
-        {
-            //Validate
-            for (int i = 0; i < _garage.Length; i++)
-            {
-                if (_garage.Equals(found))
-                {
-                    _garage[i] = default!;
-                    return true;
-                }
-
-                //if ((IVehicle)_garage[i] == (IVehicle)found)
-                //    _garage[i] = default!;
-            }
-            return false;
-           
-        }
     }
 }

@@ -2,8 +2,8 @@
 {
     internal class Main
     {
-        IUI ui;
-        private GarageHandler garageHandler;
+        private readonly IUI ui;
+        private IGarageHandler garageHandler;
 
         public Main(IUI ui)
         {
@@ -14,20 +14,29 @@
         {
             InitGarage();
 
+            dynamic[,] menu =
+            {
+                { "1", "List all vehicles parked in the garage" },
+                { "2", "Park vehicle in garage" },
+                { "3", "Take vehicle from garage" }, // Has reg plate "search" functionality.
+                { "4", "Filter/search for vehicles in the garage" }, // Also counts types of vehicles if you only filter for that type.
+                { "0", "Quit" }
+            };
+
+            int menuLength = menu.GetLength(0);
+
             bool run = true;
             do
             {
-                ui.WriteLine("Garage Main Menu" +
-                    "\n1. List all vehicles parked in the garage" +
-                    "\n2. Park vehicle in garage" +
-                    "\n3. Take vehicle from garage" + // Has reg plate "search" functionality.
-                    "\n4. Filter/search for vehicles in the garage" +
-                    "\n5. Quit the application");
+                ui.Clear();
+                ui.WriteLine("Garage Main Menu");
+                for (int i = 0; i < menuLength; i++) ui.WriteLine($"{menu[i, 0]}) {menu[i, 1]}");
 
+                // ToDo: Switch on dynamic array / convert to dict
                 switch (ui.ReadLine())
                 {
                     case "1":
-                        ListVehicles();
+                        PrintVehicles();
                         break;
                     case "2":
                         ParkVehicle();
@@ -36,9 +45,9 @@
                         TakeVehicle();
                         break;
                     case "4":
-                        FilterVehicles(garage);
+                        FilterVehicles();
                         break;
-                    case "5":
+                    case "0":
                         run = false;
                         break;
                 }
@@ -47,32 +56,13 @@
 
         private void TakeVehicle()
         {
-           
-            ListVehicles();
+            PrintVehicles();
             ui.Write("Vehicle to remove (RegPlate): ");
             var input = ui.ReadLine().ToUpper();
             garageHandler.UnPark(input);
-            //var vehicleArray = garage.Where(x => x.RegPlate != input).ToArray();
-
-            // ToDo: Fix ugly solution
-            if (vehicleArray.Count() < garage.Count())
-            {
-                Garage<IVehicle> newGarage = new Garage<IVehicle>(garage.Size);
-
-                foreach (var vehicle in vehicleArray)
-                {
-                    newGarage.Add(vehicle);
-                }
-
-                ui.WriteLine($"{input} has been removed from the garage.");
-
-                return newGarage;
-            }
-            else return garage;
-
         }
 
-        private void ListVehicles()
+        private void PrintVehicles()
         {
             foreach (var vehicle in garageHandler.GetVehicles())
             {
@@ -101,14 +91,16 @@
                 string yn = ui.ReadLine().ToLower();
                 if (yn is "y")
                 {
-                    // garage new Garage<IVehicle>(garageSize)
                     garageHandler = new GarageHandler(garageSize);
-                    GetSeed().ForEach(v => garageHandler.Add(v));
+                    foreach (var vehicle in GetSeed()) garageHandler.Park(vehicle);
+
+                    //GetSeed().ForEach(v => garageHandler.Park(v));
+                    break;
                 }
                 else if (yn is "n")
                 {
                     garageHandler = new GarageHandler(garageSize);
-                  //  return new Garage<IVehicle>(garageSize);
+                    break;
                 }
             } while (true);
         }
@@ -131,16 +123,17 @@
 
         private void ParkVehicle()
         {
-            if (garage.Size <= garage.Count()) ui.WriteLine("The garage is full.");
+            if (garageHandler.IsFull)
+                ui.WriteLine("The garage is full.");
             else
             {
-                garageHandler.Add(NewVehicle());
+                garageHandler.Park(NewIVehicle());
                 ui.WriteLine("Your vehicle has been parked.");
             }
         }
 
-        // ToDo: Fix redunant code
-        private IVehicle NewVehicle()
+        // ToDo: Elim redunant code
+        private IVehicle NewIVehicle()
         {
             string regPlate;
             string color;
@@ -160,6 +153,7 @@
                 switch (ui.ReadLine().ToLower().Trim())
                 {
                     case "airplane":
+                        //NewAirplane();
                         regPlate = VehicleRegPlate();
                         color = VehicleColor();
                         wheelCount = VehicleWheelCount();
@@ -197,14 +191,21 @@
 
         }
 
-        private void FilterVehicles(Garage<IVehicle> garage)
+
+        private Airplane NewAirplane()
         {
+            throw new NotImplementedException();
+        }
+
+        private void FilterVehicles()
+        {
+
             string typeOfVehicle = string.Empty;
             string colorOfVehicle = string.Empty;
             int wheelCountOfVehicle = -1;
 
-            ui.WriteLine("Filter Vehicles" +
-                "\nLeave the field empty if you don't want to filter that category.");
+            ui.WriteLine("Filter Vehicles"
+                         + "\nLeave the field empty if you don't want to filter that category.");
 
             ui.Write("Type: ");
             typeOfVehicle = ui.ReadLine();
@@ -217,12 +218,10 @@
                 ui.Write("Number of Wheels: ");
                 string input = ui.ReadLine();
                 if (string.IsNullOrWhiteSpace(input)) break;
-                else if (!int.TryParse(input, out int number)) 
-                    ui.WriteLine("Only whole numbers are allowed. " +
-                        "Leave empty if you don't want to filter this category.");
-                else if (number < 0) 
-                    ui.WriteLine("A vehicle can't have a negative amount of wheels. " +
-                    "Leave empty if you don't want to filter this category.");
+                else if (!int.TryParse(input, out int number))
+                    ui.WriteLine("Only whole numbers are allowed.");
+                else if (number < 0)
+                    ui.WriteLine("A vehicle can't have a negative amount of wheels.");
                 else
                 {
                     wheelCountOfVehicle = number;
@@ -230,57 +229,34 @@
                 }
             } while (true);
 
-            var filteredVehicles = garage
-                .Where(x => (string.IsNullOrWhiteSpace(typeOfVehicle) || x.GetType().Name == typeOfVehicle))
-                .Where(x => (string.IsNullOrWhiteSpace(colorOfVehicle) || x.Color == colorOfVehicle))
-                .Where(x => (wheelCountOfVehicle == -1 || x.WheelCount == wheelCountOfVehicle));
+            var filteredVehicles = garageHandler.FilterVehicles(typeOfVehicle, colorOfVehicle, wheelCountOfVehicle);
 
+            int filteredVehiclesCount = 0;
             foreach (var vehicle in filteredVehicles)
             {
-                ui.WriteLine($"{vehicle.RegPlate} {vehicle.GetType().Name} {vehicle.Color} {vehicle.WheelCount}");
+                ui.WriteLine(
+                    $"\n#{++filteredVehiclesCount}" +
+                    $"\nRegPlate: {vehicle.RegPlate}" +
+                    $"\nType: {vehicle.GetType().Name}" +
+                    $"\nColor: {vehicle.Color}" +
+                    $"\nWheel Count: {vehicle.WheelCount}");
             }
 
         }
 
-        //ToDo: Generalise the method to eliminate repetition with NewVehicle method.
-        private string TypeOfVehicle()
-        {
-            do
-            {
-                switch (ui.ReadLine().ToLower().Trim())
-                {
-                    case "airplane":
-                        return "Airplane";
-                    case "boat":
-                        return "Boat";
-                    case "bus":
-                        return "Bus";
-                    case "car":
-                        return "Car";
-                    case "motorcycle":
-                        return "Motorcycle";
-                    default:
-                        ui.WriteLine("The garage can only contain the following types of vehicles:" +
-                            "\nAirplane" +
-                            "\nBoat" +
-                            "\nBus" +
-                            "\nCar" +
-                            "\nMotorcycle");
-                        break;
-                }
-            } while (true);
-        }
 
+        // Could make one method to contain all the functionality below and throw exceptions as needed.
         private string VehicleRegPlate()
         {
             string regPlate = string.Empty;
             do
             {
                 ui.Write("RegPlate: ");
-                regPlate = ui.ReadLine();
+                regPlate = ui.ReadLine().ToUpper();
                 if (string.IsNullOrWhiteSpace(regPlate)) ui.WriteLine("RegPlates can't be empty.");
                 else if (regPlate.Length > 100) ui.WriteLine("RegPlates can't be longer than 100 characters.");
-                else return regPlate.ToUpper();
+                else if (garageHandler.CheckRegPlate(regPlate) != null) ui.WriteLine("A vehicle with that RegPlate is already parked in the garage.");
+                else return regPlate;
             } while (true);
         }
 
