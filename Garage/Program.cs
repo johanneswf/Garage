@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            IUI ui = new ConsoleUI(); 
+            IUI ui = new ConsoleUI();
             Main main = new(ui);
             main.Run();
         }

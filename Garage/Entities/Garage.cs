@@ -16,10 +16,8 @@
 
         public void Add(T item)
         {
-            // We iterate over our garage array
             for (int i = 0; i < Size; i++)
             {
-                // We add our item to the first null element in our array
                 if (garage[i] is null)
                 {
                     garage[i] = item;

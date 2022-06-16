@@ -10,15 +10,11 @@
 
         public void Park(IVehicle item) => _garage.Add(item);
 
-        // ToDo: Fix null warning
-        public IVehicle CheckRegPlate(string input)
-        {
-            return _garage.FirstOrDefault(v => v.RegPlate == input);
-        }
+        public bool CheckRegPlate(string input) => _garage.Any(v => v.RegPlate == input);
 
         public void UnPark(string input)
         {
-            var found = CheckRegPlate(input);
+            var found = _garage.FirstOrDefault(v => v.RegPlate == input);
             if (found != null) _garage.Remove(found);
         }
 
